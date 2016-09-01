@@ -9,6 +9,7 @@ using PoGo.NecroBot.Logic.PoGoUtils;
 using PoGo.NecroBot.Logic.State;
 using PoGo.NecroBot.Logic.Utils;
 using POGOProtos.Data;
+using PoGo.NecroBot.Logic.Logging;
 
 #endregion
 
@@ -55,6 +56,10 @@ namespace PoGo.NecroBot.Logic.Tasks
                 var family = session.Inventory.GetPokemonFamilies().Result.First(q => q.FamilyId == setting.FamilyId);
 
                 family.Candy_++;
+
+                Logger.Write($"Transfer Weak => CP:{pokemon.Cp} IV:{PokemonInfo.CalculatePokemonPerfection(pokemon).ToString("0.00")} "
+                     + $"  Move : {pokemon.Move1} , {pokemon.Move2}"
+                    , LogLevel.Transfer);
 
                 session.EventDispatcher.Send(new TransferPokemonEvent
                 {

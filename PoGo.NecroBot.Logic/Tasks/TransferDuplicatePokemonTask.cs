@@ -7,6 +7,7 @@ using PoGo.NecroBot.Logic.Event;
 using PoGo.NecroBot.Logic.PoGoUtils;
 using PoGo.NecroBot.Logic.State;
 using PoGo.NecroBot.Logic.Utils;
+using PoGo.NecroBot.Logic.Logging;
 
 #endregion
 
@@ -53,7 +54,11 @@ namespace PoGo.NecroBot.Logic.Tasks
                 var family = pokemonFamilies.FirstOrDefault(q => q.FamilyId == setting.FamilyId);
 
                 family.Candy_++;
-                
+
+                Logger.Write($"Transfer Duplicate => CP:{duplicatePokemon.Cp} IV:{PokemonInfo.CalculatePokemonPerfection(duplicatePokemon).ToString("0.00")}"
+                    + $"  Move : {duplicatePokemon.Move1} , {duplicatePokemon.Move2}"
+                    , LogLevel.Transfer);
+
                 session.EventDispatcher.Send(new TransferPokemonEvent
                 {
                     Id = duplicatePokemon.PokemonId,
