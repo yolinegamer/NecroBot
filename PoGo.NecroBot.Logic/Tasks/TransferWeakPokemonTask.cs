@@ -21,8 +21,6 @@ namespace PoGo.NecroBot.Logic.Tasks
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            DelayingUtils.Delay(session.LogicSettings.DelayBetweenPlayerActions, 0);
-
             await session.Inventory.RefreshCachedInventory();
             var pokemons = await session.Inventory.GetPokemons();
             var pokemonDatas = pokemons as IList<PokemonData> ?? pokemons.ToList();
@@ -40,6 +38,8 @@ namespace PoGo.NecroBot.Logic.Tasks
             foreach (var pokemon in orderedPokemon )
             {
                 cancellationToken.ThrowIfCancellationRequested();
+
+                DelayingUtils.Delay(session.LogicSettings.DelayBetweenPlayerActions, 0);
 
                 if (session.LogicSettings.KeepMinOperator.BoolFunc(
                             (pokemon.Cp >= session.LogicSettings.KeepMinCp),
