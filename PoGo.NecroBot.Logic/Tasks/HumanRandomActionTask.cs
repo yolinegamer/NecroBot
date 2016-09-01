@@ -74,8 +74,12 @@ namespace PoGo.NecroBot.Logic.Tasks
 
         public static async Task TransferRandom(ISession session, CancellationToken cancellationToken)
         {
-            if (ActionRandom.Next(1, 10) > 4)
+            if (ActionRandom.Next(1, 10) > 4 && session.LogicSettings.TransferDuplicatePokemon)
                 await TransferDuplicatePokemonTask.Execute(session, cancellationToken);
+
+            if (ActionRandom.Next(1, 10) > 4 && session.LogicSettings.TransferWeakPokemon)
+                await TransferWeakPokemonTask.Execute(session, cancellationToken);
+
         }
     }
 }
