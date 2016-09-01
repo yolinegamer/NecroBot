@@ -40,12 +40,16 @@ namespace PoGo.NecroBot.Logic.Tasks
             foreach (var pokemon in orderedPokemon )
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if ((pokemon.Cp >= session.LogicSettings.KeepMinCp) ||
-                    (PokemonInfo.CalculatePokemonPerfection(pokemon) >= session.LogicSettings.KeepMinIvPercentage &&
-                     session.LogicSettings.PrioritizeIvOverCp) ||
-                     (PokemonInfo.GetLevel(pokemon) >= session.LogicSettings.KeepMinLvl && session.LogicSettings.UseKeepMinLvl) ||
-                    pokemon.Favorite == 1)
-                    continue;
+
+                if (session.LogicSettings.KeepMinOperator.BoolFunc(
+                            (pokemon.Cp >= session.LogicSettings.KeepMinCp),
+                            (PokemonInfo.CalculatePokemonPerfection(pokemon) >= session.LogicSettings.KeepMinIvPercentage && session.LogicSettings.PrioritizeIvOverCp)
+                        ) ||
+                        (PokemonInfo.GetLevel(pokemon) >= session.LogicSettings.KeepMinLvl && session.LogicSettings.UseKeepMinLvl) ||
+                        (pokemon.Favorite == 1)
+                   )
+                        continue;
+
 
                 await session.Client.Inventory.TransferPokemon(pokemon.Id);
                 await session.Inventory.DeletePokemonFromInvById(pokemon.Id);
